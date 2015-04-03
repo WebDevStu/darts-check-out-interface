@@ -1,6 +1,11 @@
+
+/* all temp styles, tart up later */
+
 *{
     margin: 0;
     padding: 0;
+}
+body{
     font: normal normal 14px/2em 'Arial', 'San-Serif', 'Serif';
 }
 canvas{
@@ -16,12 +21,21 @@ canvas{
 }
 .toThrow li{
     display: none;
-    float: left;
-    list-style: none;
     margin: 0 10px;
+    float: left;
+    width: 30px;
+    list-style: none;
+    text-align: center;
+    border: 1px #ccc solid;
 }
 .toThrow.throw1 li:first-child,
 .toThrow.throw2 li:nth-child(2),
 .toThrow.throw3 li:last-child {
     display: block;
+}
+
+.checkout{
+    position: absolute;
+    left: 450px;
+    top: 100px;
 }

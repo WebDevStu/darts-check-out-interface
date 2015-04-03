@@ -2,19 +2,18 @@
 
 /**
  * LPD.game
+ * this class takes care of all the game logic
+ *
  * @constructor
  */
 LPD.Game = function () {
 
+    // set ups
     this.score       = 501;
     this.gameDarts   = 0;
 
+    // a score count for the three darts you are throwing
     this.okiScore    = [];
-
-    this.scoreEl     = _.$('score');
-    this.dartCountEl = _.$('darts');
-    this.toThrowEl   = _.$('.toThrow');
-
 
     // create scores array and populate with available scores
     this.scores = [];
@@ -23,6 +22,8 @@ LPD.Game = function () {
         this.scores.push(i);
     }
     this.scores.push(25, 50);
+
+    this.resetCheckout();
 
     // listen to events
     _.listen('dart:thrown', this.registerScore.bind(this));
@@ -33,7 +34,17 @@ LPD.Game = function () {
 _.extend(LPD.Game.prototype, {
 
 
+    resetCheckout: function () {
+        _.$('checkout').innerHTML = 'Checkout will appear here when available';
+    },
 
+    /**
+     * registerScore
+     * callback from event register, accepts the score that has been thrown and
+     * increases the dart throw count.
+     *
+     * @param score
+     */
     registerScore: function (score) {
 
         // if three have been thrown, reset array
@@ -62,23 +73,34 @@ _.extend(LPD.Game.prototype, {
     },
 
 
-
+    /**
+     * resetOki
+     * resets the score
+     */
     resetOki: function () {
+
         this.okiScore.length = 0;
-        this.toThrowEl.className = 'toThrow';
+        _.$('.toThrow').className = 'toThrow';
     },
 
 
-
+    /**
+     * updateDOM
+     * method to separate the dom manipulation, simply prints the stored values
+     * to the DOM
+     */
     updateDOM: function () {
 
-        this.scoreEl.innerHTML = this.score;
-        this.dartCountEl.innerHTML = this.gameDarts;
-        this.toThrowEl.className += ' throw' + this.okiScore.length;
+        _.$('score').innerHTML = this.score;
+        _.$('darts').innerHTML = this.gameDarts;
+        _.$('.toThrow').className += ' throw' + this.okiScore.length;
     },
 
 
-
+    /**
+     * lastOkiScore
+     * if the user has gone bust then, we re-calc the previous score
+     */
     lastOkiScore: function () {
 
         var score = this.okiScore.reduce(function (memory, score) {
@@ -89,7 +111,14 @@ _.extend(LPD.Game.prototype, {
         this.resetOki();
     },
 
+
+    /**
+     * checkForFinish
+     * ...
+     */
     checkForFinish: function () {
+
+
 
 
     }

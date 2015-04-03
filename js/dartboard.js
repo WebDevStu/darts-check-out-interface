@@ -11,21 +11,26 @@
  */
 LPD.DartBoard = function (canvasId) {
 
+    // register canvas
     this.canvas = _.$(canvasId);
 
+    // throw error
     if (!this.canvas) {
         throw new Error('No canvas element found!');
     }
 
+    // canvas context
     this.context = this.canvas.getContext('2d');
 
+    // the available scores on a dartboard in order of how they appear
     this.labels = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
 
+    // set up
     this.start = -99;
     this.segment = 18;
     this.dim = false;
 
-    // draw the board
+    // draw the board immediately
     this.drawBoard()
 };
 
@@ -35,8 +40,10 @@ _.extend(LPD.DartBoard.prototype, {
 
     /**
      * drawBoard
+     * iterates through the predefined scores in order and draws the canvas
+     * segments
      *
-     * @returns {*}
+     * @returns {LPD.DartBoard} for chaining
      */
     drawBoard: function (highlight) {
 
@@ -51,6 +58,7 @@ _.extend(LPD.DartBoard.prototype, {
         // set dim for this pass
         this.dim = (_.isNumber(highlight));
 
+        // base board
         this.circle({
             radius: 200,
             color: '#111'
@@ -142,7 +150,7 @@ _.extend(LPD.DartBoard.prototype, {
     /**
      * toRadians
      *
-     * @param deg
+     * @param deg {number}
      * @returns {number}
      */
     toRadians: function (deg) {
@@ -152,9 +160,10 @@ _.extend(LPD.DartBoard.prototype, {
 
     /**
      * fillStroke
+     * takes a fill and stroke value and applyes to the current context
      *
-     * @param fill
-     * @param stroke
+     * @param fill {string} hash hex colour
+     * @param stroke {string} hash hex colour
      */
     fillStroke: function (fill, stroke) {
 
@@ -169,9 +178,10 @@ _.extend(LPD.DartBoard.prototype, {
 
     /**
      * circle
+     * draws a circle on the current context
      *
-     * @param config
-     * @returns {DartBoard}
+     * @param config {object} config object
+     * @returns {LPD.DartBoard} for chaining
      */
     circle: function (config) {
 
@@ -181,7 +191,7 @@ _.extend(LPD.DartBoard.prototype, {
 
         ctx.beginPath();
         ctx.arc(x, y, config.radius, 0, Math.PI * 2, true);
-        this.fillStroke(config.color);
+        this.fillStroke(config.color, null);
         ctx.closePath();
 
         return this;
@@ -190,9 +200,10 @@ _.extend(LPD.DartBoard.prototype, {
 
     /**
      * arc
+     * draw an arc on the current context
      *
-     * @param config
-     * @returns {DartBoard}
+     * @param config {object} config object
+     * @returns {LPD.DartBoard}
      */
     arc: function (config) {
 
@@ -206,7 +217,7 @@ _.extend(LPD.DartBoard.prototype, {
         ctx.moveTo(x, y);
         ctx.arc(x, y, config.radius, start, end);
         ctx.lineTo(x, y);
-        this.fillStroke(config.color);
+        this.fillStroke(config.color, null);
         ctx.closePath();
 
         return this;
@@ -215,9 +226,10 @@ _.extend(LPD.DartBoard.prototype, {
 
     /**
      * text
+     * draws text to the current context
      *
-     * @param config
-     * @returns {DartBoard}
+     * @param config {object} config object
+     * @returns {LPD.DartBoard}
      */
     text: function (config) {
 
@@ -236,10 +248,12 @@ _.extend(LPD.DartBoard.prototype, {
 
     /**
      * getAngle
+     * method to return the angle of a point on the board given the x and y
+     * co-ordinates
      *
-     * @param x
-     * @param y
-     * @param radius
+     * @param x {number}
+     * @param y {number}
+     * @param radius {number}
      * @returns {number}
      */
     getAngle: function (x, y, radius) {
@@ -256,9 +270,10 @@ _.extend(LPD.DartBoard.prototype, {
 
     /**
      * getRadius
+     * gets the radius of a point on the board given the x & y co-ordinates
      *
-     * @param x
-     * @param y
+     * @param x {number}
+     * @param y {number}
      * @returns {number}
      */
     getRadius: function (x, y) {
@@ -270,12 +285,15 @@ _.extend(LPD.DartBoard.prototype, {
         return Math.round(sqrt);
     },
 
+
     /**
      * findValue
+     * from the angle and radius this method returns the value that the dart has
+     * fallen into
      *
-     * @param x
-     * @param y
-     * @param getSegment
+     * @param x {number}
+     * @param y {number}
+     * @param getSegment {boolean} (optional)
      * @returns {number}
      */
     findValue: function (x, y, getSegment) {
