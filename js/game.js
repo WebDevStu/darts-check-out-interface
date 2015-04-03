@@ -18,11 +18,12 @@ LPD.Game = function () {
     // create scores array and populate with available scores
     this.scores = [];
 
-    for (var i = 0; i <= 20; i += 1) {
+    this.scores.push(25);
+    for (var i = 20; i > 0; i -= 1) {
         this.scores.push(i);
     }
-    this.scores.push(25, 50);
 
+    // reset checkout - display message that one isn't ready yet
     this.resetCheckout();
 
     // listen to events
@@ -116,7 +117,61 @@ _.extend(LPD.Game.prototype, {
      * checkForFinish
      * ...
      */
-    checkForFinish: function () {
+    checkForFinish: function (score, maxDarts) {
+
+        score = score || this.score;
+
+        console.log(score);
+
+        var accumulative = score,
+            darts = 0,
+            len = this.scores.length,
+            i,
+            j,
+            k,
+            results = [];
+
+        for (i = 0; i < len; i += 1) {
+
+            // resets
+            accumulative = score;
+            darts = 0;
+
+            // first lets check all doubles
+            accumulative -= (this.scores[i] * 2);
+
+            // straight double finish jump out now
+            if (accumulative === 0) {
+                // accommodate `bull`
+                if (this.scores[i] === 25) {
+                    results.push('BULL');
+                } else {
+                    results.push('D' + this.scores[i]);
+                }
+
+                i = len;
+            } else {
+
+                // continue checking score against
+
+                // doubles and trebles
+
+
+
+
+            }
+
+
+
+            // temp cut short
+            if (results.length > 4) {
+                i = len;
+            }
+        }
+
+
+        console.log(results);
+
 
 
 

@@ -12,6 +12,8 @@
         game = new LPD.Game(dartboard.labels);
 
 
+    game.checkForFinish(60);
+
     /**
      * mouse move event to re-draw the canvas with only the segment score you
      * are hovering over as highlighted
