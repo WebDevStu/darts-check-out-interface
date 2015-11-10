@@ -104,6 +104,7 @@ var LPD = {},
         /**
          * between
          * shorthand method for evaluating a number is between two provided ints
+         * 
          * @param num {number}
          * @param first {number}
          * @param last {number}

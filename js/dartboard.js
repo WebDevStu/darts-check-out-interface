@@ -3,7 +3,7 @@
 /**
  * DartBoard
  * this class contains all logic for building the interface, has methods for
- * returning the value of the dart based on teh co-ordinates of the throw in
+ * returning the value of the dart based on the co-ordinates of the throw in
  * the dartboard
  *
  * @param canvasId
