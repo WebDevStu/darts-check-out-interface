@@ -7,6 +7,13 @@
 
     <body>
         <canvas id="dartBoard" width="400" height="400"></canvas>
+
+        <div class="scoreBoard">
+            Darts Thrown: <span class="dartCount" id="darts">0</span> |
+            Darts Score:  <span class="dartCount" id="dScore">0</span> |
+            Score:        <span class="score" id="score">501</span>
+        </div>
+
         <ul class="toThrow">
             <li>Dart 1</li>
             <li>Dart 2</li>
@@ -14,10 +21,6 @@
         </ul>
 
         <div class="checkout" id="checkout"></div>
-
-        Darts Thrown: <span class="dartCount" id="darts">0</span> |
-        Darts Score:  <span class="dartCount" id="dScore">0</span> |
-        Score:        <span class="score" id="score">501</span>
 
         <script src="js/utilities.js"></script>
         <script src="js/dartboard.js"></script>

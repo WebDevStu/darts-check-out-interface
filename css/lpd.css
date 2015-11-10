@@ -4,6 +4,11 @@
 *{
     margin: 0;
     padding: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 body{
     font: normal normal 14px/2em 'Arial', 'San-Serif', 'Serif';
@@ -16,7 +21,7 @@ canvas{
 }
 .toThrow{
     position: absolute;
-    top: 20px;
+    top: 60px;
     left: 450px;
 }
 .toThrow li{
@@ -34,9 +39,16 @@ canvas{
 .toThrow.throw3 li:last-child {
     display: block;
 }
-
+.scoreBoard{
+    position: absolute;
+    top: 20px;
+    left: 450px;
+}
 .checkout{
     position: absolute;
     left: 450px;
-    top: 120px;
+    top: 160px;
+}
+.checkouts{
+    margin-left: 25px;
 }

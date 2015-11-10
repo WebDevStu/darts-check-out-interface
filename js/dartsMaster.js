@@ -45,7 +45,7 @@
      */
     dartboard.canvas.addEventListener('click', function (evt) {
         // trigger event, so if no game running it doesn't matter
-        if (game.score) {
+        if (game.score > 0) {
             _.trigger('dart:thrown', dartboard.findValue(evt.clientX, evt.clientY));
         }
     }, false);

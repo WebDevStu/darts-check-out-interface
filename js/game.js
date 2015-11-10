@@ -226,20 +226,17 @@ _.extend(LPD.Game.prototype, {
     printResults: function (checkouts) {
 
         var unOrderedList = document.createElement('ul'),
-            softLimit = 8,
             listItem;
 
         checkouts.forEach(function (array, index) {
-
-            if (index > softLimit) {
-                return;
-            }
 
             listItem = document.createElement('li');
 
             listItem.innerHTML = array.join(', ');
             unOrderedList.appendChild(listItem);
         });
+
+        unOrderedList.className = 'checkouts';
 
         _.$('checkout').innerHTML = '';
         _.$('checkout').appendChild(unOrderedList);
