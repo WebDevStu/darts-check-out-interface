@@ -116,12 +116,14 @@ _.extend(LPD.Game.prototype, {
     /**
      * checkForFinish
      * ...
+     *
+     * @TODO make a recursive function
      */
     checkForFinish: function (score, maxDarts) {
 
-        score = score || this.score;
+        console.log(maxDarts);
 
-        console.log(score);
+        score = score || this.score;
 
         var accumulative = score,
             darts = 0,
@@ -129,7 +131,7 @@ _.extend(LPD.Game.prototype, {
             i,
             j,
             k,
-            results = [];
+            checkouts = [];
 
         for (i = 0; i < len; i += 1) {
 
@@ -144,37 +146,49 @@ _.extend(LPD.Game.prototype, {
             if (accumulative === 0) {
                 // accommodate `bull`
                 if (this.scores[i] === 25) {
-                    results.push('BULL');
+                    checkouts.push('BULL');
                 } else {
-                    results.push('D' + this.scores[i]);
+                    checkouts.push('D' + this.scores[i]);
                 }
 
                 i = len;
             } else {
 
-                // continue checking score against
-
-                // doubles and trebles
-
-
-
-
-            }
-
-
-
-            // temp cut short
-            if (results.length > 4) {
-                i = len;
+                // trebles
+                for (k = 0; k < len; k += 1) {
+                    if (accumulative - (this.scores[k] * 3) === 0) {
+                        if (this.scores[i] === 25) {
+                            checkouts.unshift('T' + this.scores[k] + ' BULL');
+                        } else {
+                            checkouts.unshift('T' + this.scores[k] + ' D' + this.scores[i]);
+                        }
+                    }
+                }
             }
         }
 
-
-        console.log(results);
-
-
-
+        // log results
+        this.printResults(checkouts);
+    },
 
 
+    /**
+     * printResults
+     *
+     * @param checkouts
+     */
+    printResults: function (checkouts) {
+
+        var unOrderedList = document.createElement('ul');
+
+        checkouts.forEach(function (string) {
+            var listItem = document.createElement('li');
+
+            listItem.innerHTML = string;
+            unOrderedList.appendChild(listItem);
+        });
+
+        _.$('checkout').innerHTML = '';
+        _.$('checkout').appendChild(unOrderedList);
     }
 });

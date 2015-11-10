@@ -12,7 +12,7 @@
         game = new LPD.Game(dartboard.labels);
 
 
-    game.checkForFinish(60);
+    //game.checkForFinish(98);
 
     /**
      * mouse move event to re-draw the canvas with only the segment score you
