@@ -48,6 +48,8 @@ _.extend(LPD.Game.prototype, {
      */
     registerScore: function (score) {
 
+        var dartsThrown;
+
         // if three have been thrown, reset array
         if (this.okiScore.length === 3) {
             this.resetOki();
@@ -55,6 +57,8 @@ _.extend(LPD.Game.prototype, {
 
         // register score
         this.okiScore.push(score);
+
+        dartsThrown = (3 - this.okiScore.length) || 3;
 
         // amend counters
         this.score -= score;
@@ -66,7 +70,7 @@ _.extend(LPD.Game.prototype, {
 
         } else if (this.score <= 170) {
             // check for finish
-            this.checkForFinish();
+            this.checkForFinish(null, dartsThrown);
         }
 
         // update board
@@ -94,10 +98,25 @@ _.extend(LPD.Game.prototype, {
 
         _.$('score').innerHTML = this.score;
         _.$('darts').innerHTML = this.gameDarts;
-        _.$('dScore').innerHTML = this.okiScore.reduce(function (memory, number) {
-            return (+memory) + (+number);
-        });
+        _.$('dScore').innerHTML = this.getOkiScore();
         _.$('.toThrow').className += ' throw' + this.okiScore.length;
+    },
+
+
+    /**
+     * getOkiScore
+     *
+     * @returns {Number}
+     */
+    getOkiScore: function () {
+
+        if (this.okiScore.length) {
+            return this.okiScore.reduce(function (memory, number) {
+                return (+memory) + (+number);
+            });
+        } else {
+            return 0;
+        }
     },
 
 
@@ -118,11 +137,9 @@ _.extend(LPD.Game.prototype, {
 
     /**
      * checkForFinish
-     * ...
-     *
-     * @TODO make a recursive function
+     * main method for resolving the checkout score based on dart left to throw
      */
-    checkForFinish: function (score, maxDarts) {
+    checkForFinish: function (score, dartsLeft) {
 
         score = score || this.score;
 
@@ -191,6 +208,11 @@ _.extend(LPD.Game.prototype, {
             return 1;
         });
 
+        // filter to only checkouts available with darts left
+        checkouts = checkouts.filter(function (array) {
+            return array.length <= dartsLeft;
+        });
+
         // log results
         this.printResults(checkouts);
     },
@@ -204,7 +226,7 @@ _.extend(LPD.Game.prototype, {
     printResults: function (checkouts) {
 
         var unOrderedList = document.createElement('ul'),
-            softLimit = 9,
+            softLimit = 8,
             listItem;
 
         checkouts.forEach(function (array, index) {

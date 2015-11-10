@@ -11,9 +11,6 @@
     var dartboard = new LPD.DartBoard('dartBoard'),
         game = new LPD.Game(dartboard.labels);
 
-
-    //game.checkForFinish(98);
-
     /**
      * mouse move event to re-draw the canvas with only the segment score you
      * are hovering over as highlighted
@@ -48,6 +45,8 @@
      */
     dartboard.canvas.addEventListener('click', function (evt) {
         // trigger event, so if no game running it doesn't matter
-        _.trigger('dart:thrown', dartboard.findValue(evt.clientX, evt.clientY));
+        if (game.score) {
+            _.trigger('dart:thrown', dartboard.findValue(evt.clientX, evt.clientY));
+        }
     }, false);
 } ());
