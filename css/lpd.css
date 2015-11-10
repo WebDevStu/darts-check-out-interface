@@ -17,16 +17,17 @@ canvas{
 .toThrow{
     position: absolute;
     top: 20px;
-    left: 400px;
+    left: 450px;
 }
 .toThrow li{
     display: none;
     margin: 0 10px;
     float: left;
-    width: 30px;
+    width: 10px;
+    height: 100px;
     list-style: none;
-    text-align: center;
-    border: 1px #ccc solid;
+    text-indent: -5000px;
+    background: url('../images/dart.png') no-repeat 50% 50%
 }
 .toThrow.throw1 li:first-child,
 .toThrow.throw2 li:nth-child(2),
@@ -37,5 +38,5 @@ canvas{
 .checkout{
     position: absolute;
     left: 450px;
-    top: 100px;
+    top: 120px;
 }

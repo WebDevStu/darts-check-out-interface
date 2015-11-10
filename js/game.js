@@ -94,6 +94,9 @@ _.extend(LPD.Game.prototype, {
 
         _.$('score').innerHTML = this.score;
         _.$('darts').innerHTML = this.gameDarts;
+        _.$('dScore').innerHTML = this.okiScore.reduce(function (memory, number) {
+            return (+memory) + (+number);
+        });
         _.$('.toThrow').className += ' throw' + this.okiScore.length;
     },
 
@@ -121,8 +124,6 @@ _.extend(LPD.Game.prototype, {
      */
     checkForFinish: function (score, maxDarts) {
 
-        console.log(maxDarts);
-
         score = score || this.score;
 
         var accumulative = score,
@@ -146,26 +147,49 @@ _.extend(LPD.Game.prototype, {
             if (accumulative === 0) {
                 // accommodate `bull`
                 if (this.scores[i] === 25) {
-                    checkouts.push('BULL');
+                    checkouts.push(['BULL']);
                 } else {
-                    checkouts.push('D' + this.scores[i]);
+                    checkouts.push(['D' + this.scores[i]]);
                 }
 
                 i = len;
+
             } else {
 
                 // trebles
                 for (k = 0; k < len; k += 1) {
+
                     if (accumulative - (this.scores[k] * 3) === 0) {
+                        // a single treble does it
                         if (this.scores[i] === 25) {
-                            checkouts.unshift('T' + this.scores[k] + ' BULL');
+                            checkouts.unshift(['T' + this.scores[k], 'BULL']);
                         } else {
-                            checkouts.unshift('T' + this.scores[k] + ' D' + this.scores[i]);
+                            checkouts.unshift(['T' + this.scores[k], 'D' + this.scores[i]]);
                         }
+
+                    } else if (accumulative - (this.scores[k] * 6) === 0) {
+                        // lets try x2 trebles
+                        if (this.scores[i] === 25) {
+                            checkouts.unshift(['T' + this.scores[k], 'T' + this.scores[k], 'BULL']);
+                        } else {
+                            checkouts.unshift(['T' + this.scores[k], 'T' + this.scores[k], 'D' + this.scores[i]]);
+                        }
+
                     }
+
                 }
             }
         }
+
+        // lets sort and trim the results
+        checkouts.sort(function (checkoutA, checkoutB) {
+
+            if (checkoutA.length < checkoutB.length) {
+                return -1;
+            }
+
+            return 1;
+        });
 
         // log results
         this.printResults(checkouts);
@@ -179,12 +203,19 @@ _.extend(LPD.Game.prototype, {
      */
     printResults: function (checkouts) {
 
-        var unOrderedList = document.createElement('ul');
+        var unOrderedList = document.createElement('ul'),
+            softLimit = 9,
+            listItem;
 
-        checkouts.forEach(function (string) {
-            var listItem = document.createElement('li');
+        checkouts.forEach(function (array, index) {
 
-            listItem.innerHTML = string;
+            if (index > softLimit) {
+                return;
+            }
+
+            listItem = document.createElement('li');
+
+            listItem.innerHTML = array.join(', ');
             unOrderedList.appendChild(listItem);
         });
 
