@@ -14,7 +14,8 @@ body{
     font: normal normal 14px/2em 'Arial', 'San-Serif', 'Serif';
 }
 canvas{
-    cursor: default
+    cursor: default;
+    position: fixed;
 }
 .pointer{
     cursor: pointer;
