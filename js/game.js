@@ -35,6 +35,9 @@ LPD.Game = function () {
 _.extend(LPD.Game.prototype, {
 
 
+    /**
+     * resetCheckout
+     */
     resetCheckout: function () {
         _.$('checkout').innerHTML = 'Checkout will appear here when available';
     },
@@ -80,7 +83,7 @@ _.extend(LPD.Game.prototype, {
 
     /**
      * resetOki
-     * resets the score
+     * resets the score for this set of darts
      */
     resetOki: function () {
 
@@ -105,7 +108,7 @@ _.extend(LPD.Game.prototype, {
 
     /**
      * getOkiScore
-     *
+     * returns the current oki score
      * @returns {Number}
      */
     getOkiScore: function () {
@@ -126,11 +129,8 @@ _.extend(LPD.Game.prototype, {
      */
     lastOkiScore: function () {
 
-        var score = this.okiScore.reduce(function (memory, score) {
-            return memory + score;
-        });
+        this.score = this.score + this.getOkiScore();
 
-        this.score = this.score + score;
         this.resetOki();
     },
 
@@ -149,7 +149,62 @@ _.extend(LPD.Game.prototype, {
             i,
             j,
             k,
-            checkouts = [];
+            checkouts = [],
+            possibles = [];
+
+
+        switch (dartsLeft) {
+
+            case 1:
+                // one dart left, check for a single double
+                this.scores.forEach(function (value) {
+
+                    if (score - (value * 2) === 0) {
+                        if (value === 25) {
+                            checkouts.push(['BULL']);
+                        } else {
+                            checkouts.push(['D' + value]);
+                        }
+                    }
+                });
+
+                break;
+
+            case 2:
+                // two darts, attempt single double, then add single then add
+                // treble
+
+                var temp = [],
+                    item;
+
+                // get doubles available
+                this.scores.forEach(function (value) {
+
+                    accumulative = score - (value * 2);
+
+                    // we have a double finish straight away
+                    if (accumulative === 0) {
+                        if (value === 25) {
+                            checkouts.push(['BULL']);
+                        } else {
+                            checkouts.push(['D' + value]);
+                        }
+                    } else if (score - (value * 2) > 2) {
+                        item = {};
+                        item[value] = 2;
+                        temp.push(item);
+                    }
+                });
+
+                console.log(temp);
+
+                break;
+
+
+            case 3:
+
+                break;
+        }
 
         for (i = 0; i < len; i += 1) {
 
@@ -162,39 +217,64 @@ _.extend(LPD.Game.prototype, {
 
             // straight double finish jump out now
             if (accumulative === 0) {
-                // accommodate `bull`
-                if (this.scores[i] === 25) {
-                    checkouts.push(['BULL']);
-                } else {
-                    checkouts.push(['D' + this.scores[i]]);
-                }
-
+                //// accommodate `bull`
+                //if (this.scores[i] === 25) {
+                //    checkouts.push(['BULL']);
+                //} else {
+                //    checkouts.push(['D' + this.scores[i]]);
+                //}
+                //
                 i = len;
 
             } else {
 
-                // trebles
-                for (k = 0; k < len; k += 1) {
 
-                    if (accumulative - (this.scores[k] * 3) === 0) {
-                        // a single treble does it
-                        if (this.scores[i] === 25) {
-                            checkouts.unshift(['T' + this.scores[k], 'BULL']);
-                        } else {
-                            checkouts.unshift(['T' + this.scores[k], 'D' + this.scores[i]]);
-                        }
+                possibles.push(this.scores[i]);
 
-                    } else if (accumulative - (this.scores[k] * 6) === 0) {
-                        // lets try x2 trebles
-                        if (this.scores[i] === 25) {
-                            checkouts.unshift(['T' + this.scores[k], 'T' + this.scores[k], 'BULL']);
-                        } else {
-                            checkouts.unshift(['T' + this.scores[k], 'T' + this.scores[k], 'D' + this.scores[i]]);
-                        }
+                //for (j = 0; j < len; j += 1) {
+                //
+                //    if (accumulative - (this.scores[j] * 2) === 0) {
+                //        // another double
+                //        if (this.scores[i] === 25) {
+                //            checkouts.unshift(['D' + this.scores[j], 'BULL']);
+                //        } else {
+                //            checkouts.unshift(['D' + this.scores[j], 'D' + this.scores[i]]);
+                //        }
+                //
+                //    } else if (accumulative - (this.scores[j] * 3) === 0) {
+                //        // a single treble does it
+                //        if (this.scores[i] === 25) {
+                //            checkouts.unshift(['T' + this.scores[j], 'BULL']);
+                //        } else {
+                //            checkouts.unshift(['T' + this.scores[j], 'D' + this.scores[i]]);
+                //        }
+                //
+                //    } else if (accumulative - (this.scores[j] * 4) === 0) {
+                //        // lets try x2 doubles
+                //        if (this.scores[i] === 25) {
+                //            checkouts.unshift(['D' + this.scores[j], 'D' + this.scores[j], 'BULL']);
+                //        } else {
+                //            checkouts.unshift(['D' + this.scores[j], 'D' + this.scores[j], 'D' + this.scores[i]]);
+                //        }
+                //
+                //    } else if (accumulative - (this.scores[j] * 5) === 0) {
+                //        // single double and a single treble
+                //        if (this.scores[i] === 25) {
+                //            checkouts.unshift(['T' + this.scores[j], 'D' + this.scores[j], 'BULL']);
+                //        } else {
+                //            checkouts.unshift(['T' + this.scores[j], 'D' + this.scores[j], 'D' + this.scores[i]]);
+                //        }
+                //
+                //    } else if (accumulative - (this.scores[j] * 6) === 0) {
+                //        // lets try x2 trebles
+                //        if (this.scores[i] === 25) {
+                //            checkouts.unshift(['T' + this.scores[j], 'T' + this.scores[j], 'BULL']);
+                //        } else {
+                //            checkouts.unshift(['T' + this.scores[j], 'T' + this.scores[j], 'D' + this.scores[i]]);
+                //        }
+                //    }
+                //}
 
-                    }
-
-                }
             }
         }
 
@@ -220,6 +300,7 @@ _.extend(LPD.Game.prototype, {
 
     /**
      * printResults
+     * updates the DOM with all possible finishes
      *
      * @param checkouts
      */
@@ -228,7 +309,7 @@ _.extend(LPD.Game.prototype, {
         var unOrderedList = document.createElement('ul'),
             listItem;
 
-        checkouts.forEach(function (array, index) {
+        checkouts.forEach(function (array) {
 
             listItem = document.createElement('li');
 
