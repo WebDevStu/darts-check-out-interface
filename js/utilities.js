@@ -124,5 +124,17 @@ var LPD = {},
          */
         isNumber: function (number) {
             return (typeof number === 'number');
+        },
+
+
+        /**
+         * toArray
+         * turns array-like objects into arrays i.e. arguments
+         *
+         * @param array {Object}
+         * @returns {Array}
+         */
+        toArray: function (array) {
+            return Array.prototype.slice.call(array);
         }
     };

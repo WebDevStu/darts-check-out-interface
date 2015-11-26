@@ -23,6 +23,8 @@ LPD.Game = function () {
         this.scores.push(i);
     }
 
+    this.possibles = [];
+
     // reset checkout - display message that one isn't ready yet
     this.resetCheckout();
 
@@ -135,11 +137,40 @@ _.extend(LPD.Game.prototype, {
     },
 
 
+
+
+    accumulator: function (multipliers, score) {
+
+        var args = _.toArray(arguments).slice(2),
+            values = args.reduce(function (value, memory) {
+                return memory + value;
+            }),
+            cont = false,
+            possible;
+
+        if (score - values === 0) {
+
+            possible = [];
+
+            args.forEach(function (value, index) {
+                possible.push({
+                    value: value,
+                    multiplier: multipliers[index]
+                });
+            });
+
+            this.possibles.push(possible);
+        } else {
+            cont = true;
+        }
+
+        return cont
+    },
+
+
     /**
      * checkForFinish
      * main method for resolving the checkout score based on dart left to throw
-     *
-     * @TODO MASSIVE OPTIMISATION NEEDED - proof of concept proved!
      */
     checkForFinish: function (score) {
 
@@ -151,109 +182,75 @@ _.extend(LPD.Game.prototype, {
             }),
             trebles = this.scores.slice.call(this.scores).map(function (score) {
                 return score * 3;
-            }).slice(1),
-            possibles = [];
+            }).slice(1);
+
+
+        this.possibles.length = 0;
 
 
         // start with finding doubles
         doubles.forEach(function (double) {
 
-            // finish on this double
-            if ((score - double) === 0) {
-                possibles.push([{
-                    value: double / 2,
-                    multiplier: 2
-                }]);
-
-            } else {
+            // finish on this double - we're done
+            if (this.accumulator([2], score, double)) {
 
                 // go forward and remove a single
                 singles.forEach(function (single) {
 
-                    // finish on this double and this single
-                    if ((score - double - single) === 0) {
-                        possibles.push([{
-                            value: double / 2,
-                            multiplier: 2
-                        }, {
-                            value: single,
-                            multiplier: 1
-                        }]);
+                    if (this.accumulator([2, 1], score, double, single)) {
 
-                    } else {
-
-                        // keep going to see if trebles play a part
+                        // finish with this double, this single and this treble
                         trebles.forEach(function (treble) {
-
-                            // finish with this double, this single and this treble
-                            if ((score - double - single - treble) === 0) {
-                                possibles.push([{
-                                    value: double / 2,
-                                    multiplier: 2
-                                }, {
-                                    value: single,
-                                    multiplier: 1
-                                }, {
-                                    value: treble / 3,
-                                    multiplier: 3
-                                }]);
-                            }
-                        });
+                            this.accumulator([2, 1, 3], score, double, single, treble);
+                        }, this);
                     }
-                });
+                }, this);
 
                 // finally try trebles and trebles
                 trebles.forEach(function (treble) {
 
                     // we have a finish with this double and this treble
-                    if ((score - double - treble) === 0) {
-                        possibles.push([{
-                            value: double / 2,
-                            multiplier: 2
-                        }, {
-                            value: treble / 3,
-                            multiplier: 3
-                        }]);
-
-                    } else {
+                    if (this.accumulator([2, 3], score, double, treble)) {
 
                         trebles.forEach(function (treble2) {
-
-                            if ((score - double - treble - treble2) === 0) {
-                                possibles.push([{
-                                    value: double / 2,
-                                    multiplier: 2
-                                }, {
-                                    value: treble / 3,
-                                    multiplier: 3
-                                }, {
-                                    value: treble2 / 3,
-                                    multiplier: 3
-                                }]);
-                            }
-                        });
+                            this.accumulator([2, 3, 3], score, double, treble, treble2);
+                        }, this);
 
                         doubles.forEach(function (double2) {
-                            if ((score - double - treble - double2) === 0) {
-                                possibles.push([{
-                                    value: double / 2,
-                                    multiplier: 2
-                                }, {
-                                    value: treble / 3,
-                                    multiplier: 3
-                                }, {
-                                    value: double2 / 2,
-                                    multiplier: 2
-                                }]);
-                            }
-                        });
+                            this.accumulator([2, 3, 2], score, double, treble, double2);
+                        }, this);
                     }
-                });
+                }, this);
             }
-        });
+        }, this);
 
         // log results
-        this.printResults(this.convertPossibles(possibles));
+        this.printResults();
+    },
+
+
+    /**
+     * printResults
+     * updates the DOM with all possible finishes
+     */
+    printResults: function () {
+
+        var checkouts = this.convertPossibles(),
+            unOrderedList = document.createElement('ul'),
+            listItem;
+
+        checkouts.forEach(function (array) {
+
+            listItem = document.createElement('li');
+
+            listItem.innerHTML = array.join(', ');
+            unOrderedList.appendChild(listItem);
+        });
+
+        unOrderedList.className = 'checkouts';
+
+        _.$('checkout').innerHTML = '';
+        _.$('checkout').appendChild(unOrderedList);
     },
 
 
@@ -261,16 +258,15 @@ _.extend(LPD.Game.prototype, {
      * convertPossibles
      * converts the possibles array into human readable
      *
-     * @param possibles {Array}
      * @returns {Array}
      */
-    convertPossibles: function (possibles) {
+    convertPossibles: function () {
 
         var checkouts = [],
             notation = [null, null, 'D', 'T'],
             part;
 
-        possibles.forEach(function (finishArray) {
+        this.possibles.forEach(function (finishArray) {
 
             finishArray.reverse();
             part = [];
@@ -298,32 +294,5 @@ _.extend(LPD.Game.prototype, {
         });
 
         return checkouts;
-    },
-
-
-
-    /**
-     * printResults
-     * updates the DOM with all possible finishes
-     *
-     * @param checkouts
-     */
-    printResults: function (checkouts) {
-
-        var unOrderedList = document.createElement('ul'),
-            listItem;
-
-        checkouts.forEach(function (array) {
-
-            listItem = document.createElement('li');
-
-            listItem.innerHTML = array.join(', ');
-            unOrderedList.appendChild(listItem);
-        });
-
-        unOrderedList.className = 'checkouts';
-
-        _.$('checkout').innerHTML = '';
-        _.$('checkout').appendChild(unOrderedList);
     }
 });
