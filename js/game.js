@@ -304,42 +304,56 @@ _.extend(LPD.Game.prototype, {
 
         var checkouts = [],
             notation = [null, null, 'D', 'T'],
-            part;
+            checkout;
 
         this.possibles.forEach(function (finishArray) {
 
             finishArray.reverse();
-            part = [];
+            checkout = [];
 
             finishArray.forEach(function (finish) {
 
                 if (finish.value === 25 && finish.multiplier === 2) {
-                    part.push('BULL');
+                    checkout.push('BULL');
                 } else {
-                    part.push(notation[finish.multiplier] + finish.value);
+                    checkout.push(notation[finish.multiplier] + finish.value);
                 }
             });
 
-            checkouts.push(part);
+            checkouts.push(checkout);
         });
 
         // lets sort and trim the results
         checkouts.sort(function (checkoutA, checkoutB) {
+
+            var firstCharA,
+                firstCharB;
 
             if (checkoutA.length < checkoutB.length) {
                 return -1;
             }
 
             if (_.isString(checkoutA[0]) && _.isString(checkoutB[0])) {
-                if (checkoutA[0].charAt(0) < checkoutB[0].charAt(0)) {
+
+                firstCharA = checkoutA[0].charAt(0).toLowerCase();
+                firstCharB = checkoutB[0].charAt(0).toLowerCase();
+
+                if (firstCharA === firstCharB) {
+
+                    if (+checkoutA[0].slice(1) > +checkoutB[0].slice(1)) {
+                        return -1;
+                    }
                     return 1;
                 }
 
-                if (+checkoutA[0].slice(1) > +checkoutB[0].slice(1)) {
-                    return 1;
+                if (firstCharA > firstCharB) {
+                    return -1;
                 }
+
+                return 1;
             }
-            return 1;
+
+            return -1;
         });
 
         return checkouts;
