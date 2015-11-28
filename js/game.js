@@ -11,25 +11,24 @@ LPD.Game = function () {
     // set ups
     this.score       = 501;
     this.gameDarts   = 0;
-
     // a score count for the three darts you are throwing
     this.okiScore    = [];
-
     // create scores array and populate with available scores
     this.scores = [];
+    // possibles array for storing possible finishes
+    this.possibles = [];
 
     this.scores.push(25);
+
     for (var i = 20; i > 0; i -= 1) {
         this.scores.push(i);
     }
 
-    this.possibles = [];
-
     // reset checkout - display message that one isn't ready yet
     this.resetCheckout();
 
-    // listen to events
-    _.listen('dart:thrown', this.registerScore.bind(this));
+    // listen to dart events
+    _.listen('dart:thrown', this.registerScore, this);
 };
 
 
@@ -71,11 +70,12 @@ _.extend(LPD.Game.prototype, {
 
         if (this.score < 0) {
             // bust, go back to start of three dart throw
-            this.lastOkiScore();
+            this.lastOkiScore()
+                .checkForFinish();
 
         } else if (this.score <= 170) {
             // check for finish
-            this.checkForFinish(null, dartsThrown);
+            this.checkForFinish();
         }
 
         // update board
@@ -128,17 +128,28 @@ _.extend(LPD.Game.prototype, {
     /**
      * lastOkiScore
      * if the user has gone bust then, we re-calc the previous score
+     *
+     * @returns {LPD.Game}
      */
     lastOkiScore: function () {
 
         this.score = this.score + this.getOkiScore();
 
         this.resetOki();
+
+        return this;
     },
 
 
-
-
+    /**
+     * accumulator
+     * method for checking a score finish given an array of multipliers and many
+     * scores. returns true if the iterator needs to continue
+     *
+     * @param multipliers {Array}
+     * @param score {Number}
+     * @returns {boolean}
+     */
     accumulator: function (multipliers, score) {
 
         var args = _.toArray(arguments).slice(2),
@@ -184,9 +195,7 @@ _.extend(LPD.Game.prototype, {
                 return score * 3;
             }).slice(1);
 
-
         this.possibles.length = 0;
-
 
         // start with finding doubles
         doubles.forEach(function (double) {

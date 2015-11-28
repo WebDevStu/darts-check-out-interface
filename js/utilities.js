@@ -44,10 +44,17 @@ var LPD = {},
         /**
          * listen
          *
-         * @param listenId
-         * @param callback
+         * @param listenId {String} identifier
+         * @param callback {Function} callback method
+         * @param scope {Object} !optional - the scope you want the callback to
+         * be called upon
          */
-        listen: function (listenId, callback) {
+        listen: function (listenId, callback, scope) {
+
+            // if scope given store on callback method
+            if (scope) {
+                callback._scope = scope;
+            }
 
             _.events[listenId] = _.events[listenId] || [];
             _.events[listenId].push(callback);
@@ -66,13 +73,16 @@ var LPD = {},
             var events = _.events[triggerId],
                 len = events.length,
                 i,
-                args;
-
-            args = Array.prototype.slice.call(arguments).slice(1);
+                args = _.toArray(arguments).slice(1);
 
             for (i = 0; i < len; i += 1) {
                 if (typeof events[i] === 'function') {
-                    events[i].apply(this, args);
+
+                    if (events[i]._scope) {
+                        events[i].apply(events[i]._scope, args);
+                    } else {
+                        events[i].apply(this, args);
+                    }
                 }
             }
         },
