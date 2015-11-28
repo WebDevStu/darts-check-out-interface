@@ -208,9 +208,32 @@ _.extend(LPD.Game.prototype, {
 
                     if (this.accumulator([2, 1], score, double, single)) {
 
+                        // finish with this double, this single and this single
+                        singles.forEach(function (single2) {
+                            this.accumulator([2, 1, 1], score, double, single, single2);
+                        }, this);
+
+                        // finish with this double, this single and this double
+                        doubles.forEach(function (double2) {
+                            this.accumulator([2, 1, 2], score, double, single, double2);
+                        }, this);
+
                         // finish with this double, this single and this treble
                         trebles.forEach(function (treble) {
                             this.accumulator([2, 1, 3], score, double, single, treble);
+                        }, this);
+                    }
+                }, this);
+
+
+                // lets try doubles
+                doubles.forEach(function (double2) {
+
+                    if (this.accumulator([2, 2], score, double, double2)) {
+
+                        // third double deep
+                        doubles.forEach(function (double3) {
+                            this.accumulator([2, 2, 2], score, double, double2, double3);
                         }, this);
                     }
                 }, this);
@@ -221,12 +244,12 @@ _.extend(LPD.Game.prototype, {
                     // we have a finish with this double and this treble
                     if (this.accumulator([2, 3], score, double, treble)) {
 
-                        trebles.forEach(function (treble2) {
-                            this.accumulator([2, 3, 3], score, double, treble, treble2);
-                        }, this);
-
                         doubles.forEach(function (double2) {
                             this.accumulator([2, 3, 2], score, double, treble, double2);
+                        }, this);
+
+                        trebles.forEach(function (treble2) {
+                            this.accumulator([2, 3, 3], score, double, treble, treble2);
                         }, this);
                     }
                 }, this);
