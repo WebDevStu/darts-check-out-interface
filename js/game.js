@@ -156,26 +156,34 @@ _.extend(LPD.Game.prototype, {
             values = args.reduce(function (value, memory) {
                 return memory + value;
             }),
-            cont = false,
-            possible;
+            checkout = [],
+            one,
+            two;
 
         if (score - values === 0) {
 
-            possible = [];
-
             args.forEach(function (value, index) {
-                possible.push({
-                    value: value,
-                    multiplier: multipliers[index]
+                checkout.push({
+                    value: value / multipliers[index],
+                    multiplier: multipliers[index],
+                    score: value
                 });
             });
 
-            this.possibles.push(possible);
-        } else {
-            cont = true;
+            one = checkout[1];
+            two = checkout[2];
+
+            if ((one && two) && (one.score < two.score)) {
+                checkout[1] = two;
+                checkout[2] = one;
+            }
+
+            this.possibles.push(checkout);
+
+            return false;
         }
 
-        return cont
+        return true;
     },
 
 
@@ -187,11 +195,11 @@ _.extend(LPD.Game.prototype, {
 
         score = score || this.score;
 
-        var singles = this.scores.slice.call(this.scores),
-            doubles = this.scores.slice.call(this.scores).map(function (score) {
+        var singles = _.toArray(this.scores),
+            doubles = _.toArray(this.scores).map(function (score) {
                 return score * 2;
             }),
-            trebles = this.scores.slice.call(this.scores).map(function (score) {
+            trebles = _.toArray(this.scores).map(function (score) {
                 return score * 3;
             }).slice(1);
 
@@ -322,6 +330,15 @@ _.extend(LPD.Game.prototype, {
                 return -1;
             }
 
+            if (_.isString(checkoutA[0]) && _.isString(checkoutB[0])) {
+                if (checkoutA[0].charAt(0) < checkoutB[0].charAt(0)) {
+                    return 1;
+                }
+
+                if (+checkoutA[0].slice(1) > +checkoutB[0].slice(1)) {
+                    return 1;
+                }
+            }
             return 1;
         });
 

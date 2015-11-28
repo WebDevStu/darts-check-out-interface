@@ -139,12 +139,25 @@ var LPD = {},
 
         /**
          * toArray
-         * turns array-like objects into arrays i.e. arguments
+         * turns array-like objects into arrays i.e. arguments, also copies the
+         * array
          *
          * @param array {Object}
          * @returns {Array}
          */
         toArray: function (array) {
             return Array.prototype.slice.call(array);
+        },
+
+
+        /**
+         * isString
+         * basically starting to copy underscorejs right now o_O
+         *
+         * @param subject
+         * @returns {boolean}
+         */
+        isString: function (subject) {
+            return (subject && typeof subject === 'string');
         }
     };
