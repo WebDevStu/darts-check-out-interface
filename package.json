@@ -1,0 +1,25 @@
+{
+  "name": "dartboard",
+  "version": "1.0.0",
+  "description": "A fun project that started whilst watching the darts, the project draws a canvas dartboard that you can play a game of 501, as soon as a finish becomes available you will see all possible variants.",
+  "main": "index.js",
+  "dependencies": {
+    "babel-cli": "^6.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebDevStu/Darts-Check-Out-interface.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WebDevStu/Darts-Check-Out-interface/issues"
+  },
+  "homepage": "https://github.com/WebDevStu/Darts-Check-Out-interface"
+}
