@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * dartsMaster
  * basically a controller, all logic to be kept out of the global scope
@@ -31,7 +29,8 @@
         dartboard.drawBoard(value);
     }, false);
 
-    var test = 1;
+
+    let test = 1;
 
     /**
      * double check to make sure the board is reset
@@ -39,6 +38,7 @@
     dartboard.canvas.addEventListener('mouseout', function () {
         dartboard.drawBoard();
     }, false);
+
 
     /**
      * throw some darts
@@ -49,4 +49,4 @@
             _.trigger('dart:thrown', dartboard.findValue(evt.clientX, evt.clientY));
         }
     }, false);
-})();
+} ());
