@@ -69,7 +69,7 @@ var _ = {
         var events = _.events[triggerId],
             len = events.length,
             i,
-            args = _.toArray(_arguments).slice(1);
+            args = _.toArray(arguments).slice(1);
 
         for (i = 0; i < len; i += 1) {
             if (typeof events[i] === 'function') {

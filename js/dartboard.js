@@ -42,15 +42,22 @@ var DartBoard = function () {
     }
 
     /**
-     * drawBoard
-     * iterates through the predefined scores in order and draws the canvas
-     * segments
+     * toRadians
      *
-     * @returns {DartBoard} for chaining
+     * @param deg {number}
+     * @returns {number}
      */
 
     _createClass(DartBoard, [{
         key: 'drawBoard',
+
+        /**
+         * drawBoard
+         * iterates through the predefined scores in order and draws the canvas
+         * segments
+         *
+         * @returns {DartBoard} for chaining
+         */
         value: function drawBoard(highlight) {
 
             var onoff = false,
@@ -178,7 +185,7 @@ var DartBoard = function () {
          * draws a circle on the current context
          *
          * @param config {object} config object
-         * @returns {LPD.DartBoard} for chaining
+         * @returns {DartBoard} for chaining
          */
         value: function circle(config) {
 
@@ -201,13 +208,13 @@ var DartBoard = function () {
          * draw an arc on the current context
          *
          * @param config {object} config object
-         * @returns {LPD.DartBoard}
+         * @returns {DartBoard}
          */
         value: function arc(config) {
 
             var ctx = this.context,
-                start = this.toRadians(config.startAngle),
-                end = this.toRadians(config.endAngle),
+                start = DartBoard.toRadians(config.startAngle),
+                end = DartBoard.toRadians(config.endAngle),
                 x = 200,
                 y = 200;
 
@@ -228,7 +235,7 @@ var DartBoard = function () {
          * draws text to the current context
          *
          * @param config {object} config object
-         * @returns {LPD.DartBoard}
+         * @returns {DartBoard}
          */
         value: function text(config) {
 
@@ -258,8 +265,8 @@ var DartBoard = function () {
          */
         value: function findValue(x, y, getSegment) {
 
-            var radius = this.getRadius(x, y),
-                angle = this.getAngle(x, y, radius),
+            var radius = DartBoard.getRadius(x, y),
+                angle = DartBoard.getAngle(x, y, radius),
                 segment = Math.round(angle / 18) + 5,
                 multiplier = 1;
 
@@ -288,13 +295,6 @@ var DartBoard = function () {
         }
     }], [{
         key: 'toRadians',
-
-        /**
-         * toRadians
-         *
-         * @param deg {number}
-         * @returns {number}
-         */
         value: function toRadians(deg) {
             return deg * Math.PI / 180;
         }
@@ -344,5 +344,3 @@ var DartBoard = function () {
 
     return DartBoard;
 }();
-
-;

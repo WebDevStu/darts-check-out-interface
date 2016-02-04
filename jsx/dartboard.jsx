@@ -10,6 +10,7 @@
 class DartBoard {
 
     constructor (canvasId) {
+
         // register canvas
         this.canvas = _.$(canvasId);
 
@@ -30,8 +31,60 @@ class DartBoard {
         this.dim = false;
 
         // draw the board immediately
-        this.drawBoard()
+        this.drawBoard();
     }
+
+
+    /**
+     * toRadians
+     *
+     * @param deg {number}
+     * @returns {number}
+     */
+    static toRadians (deg) {
+        return deg * Math.PI / 180;
+    };
+
+
+    /**
+     * getAngle
+     * method to return the angle of a point on the board given the x and y
+     * co-ordinates
+     *
+     * @param x {number}
+     * @param y {number}
+     * @param radius {number}
+     * @returns {number}
+     */
+    static getAngle (x, y, radius) {
+
+        var angle = Math.round(Math.atan((y - 200) / ((x - 200) - radius)) * (360 / Math.PI) + 180);
+
+        if (angle === 360 || isNaN(angle)) {
+            angle = 0;
+        }
+
+        return angle;
+    };
+
+
+    /**
+     * getRadius
+     * gets the radius of a point on the board given the x & y co-ordinates
+     *
+     * @param x {number}
+     * @param y {number}
+     * @returns {number}
+     */
+    static getRadius (x, y) {
+
+        var x0 = Math.pow(x - 200, 2),
+            y0 = Math.pow(y - 200, 2),
+            sqrt = Math.sqrt(x0 + y0);
+
+        return Math.round(sqrt);
+    };
+
 
 
     /**
@@ -144,17 +197,6 @@ class DartBoard {
 
 
     /**
-     * toRadians
-     *
-     * @param deg {number}
-     * @returns {number}
-     */
-   static toRadians (deg) {
-        return deg * Math.PI / 180;
-    };
-
-
-    /**
      * fillStroke
      * takes a fill and stroke value and applyes to the current context
      *
@@ -177,7 +219,7 @@ class DartBoard {
      * draws a circle on the current context
      *
      * @param config {object} config object
-     * @returns {LPD.DartBoard} for chaining
+     * @returns {DartBoard} for chaining
      */
     circle (config) {
 
@@ -199,13 +241,13 @@ class DartBoard {
      * draw an arc on the current context
      *
      * @param config {object} config object
-     * @returns {LPD.DartBoard}
+     * @returns {DartBoard}
      */
     arc (config) {
 
         var ctx = this.context,
-            start = this.toRadians(config.startAngle),
-            end = this.toRadians(config.endAngle),
+            start = DartBoard.toRadians(config.startAngle),
+            end = DartBoard.toRadians(config.endAngle),
             x = 200,
             y = 200;
 
@@ -225,7 +267,7 @@ class DartBoard {
      * draws text to the current context
      *
      * @param config {object} config object
-     * @returns {LPD.DartBoard}
+     * @returns {DartBoard}
      */
     text (config) {
 
@@ -243,46 +285,6 @@ class DartBoard {
 
 
     /**
-     * getAngle
-     * method to return the angle of a point on the board given the x and y
-     * co-ordinates
-     *
-     * @param x {number}
-     * @param y {number}
-     * @param radius {number}
-     * @returns {number}
-     */
-    static getAngle (x, y, radius) {
-
-        var angle = Math.round(Math.atan((y - 200) / ((x - 200) - radius)) * (360 / Math.PI) + 180);
-
-        if (angle === 360 || isNaN(angle)) {
-            angle = 0;
-        }
-
-        return angle;
-    };
-
-
-    /**
-     * getRadius
-     * gets the radius of a point on the board given the x & y co-ordinates
-     *
-     * @param x {number}
-     * @param y {number}
-     * @returns {number}
-     */
-    static getRadius (x, y) {
-
-        var x0 = Math.pow(x - 200, 2),
-            y0 = Math.pow(y - 200, 2),
-            sqrt = Math.sqrt(x0 + y0);
-
-        return Math.round(sqrt);
-    };
-
-
-    /**
      * findValue
      * from the angle and radius this method returns the value that the dart has
      * fallen into
@@ -294,8 +296,8 @@ class DartBoard {
      */
     findValue (x, y, getSegment) {
 
-        var radius = this.getRadius(x, y),
-            angle = this.getAngle(x, y, radius),
+        var radius = DartBoard.getRadius(x, y),
+            angle = DartBoard.getAngle(x, y, radius),
             segment = Math.round(angle / 18) + 5,
             multiplier = 1;
 
@@ -322,4 +324,4 @@ class DartBoard {
 
         return this.labels[segment] * multiplier;
     }
-};
+}

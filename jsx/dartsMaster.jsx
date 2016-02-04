@@ -4,7 +4,6 @@
  */
 (function () {
 
-
     // instantiate a new dartboard and new game
     // @TODO new game to instantiate on users command
     var dartboard = new DartBoard('dartBoard'),

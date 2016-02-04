@@ -28,7 +28,7 @@ class Game {
         }
 
         // reset checkout - display message that one isn't ready yet
-        this.resetCheckout();
+        Game.resetCheckout();
 
         // listen to dart events
         _.listen('dart:thrown', this.registerScore, this);
